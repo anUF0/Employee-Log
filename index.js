@@ -388,5 +388,5 @@ const deleteRole = () => {
 });
 }
 
-//Intisation
+//Inti
 returnPrompts();
