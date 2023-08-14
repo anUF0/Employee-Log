@@ -20,7 +20,7 @@ inquirer.prompt([
     type: 'list',
     name: 'prompt',
     message: 'What would you like to do?',
-    choices: ['View All Department',
+    choices: ['View All Departments',
             'View All Employees',
             'View All Roles',
             'Update An Employee Role',
@@ -31,29 +31,28 @@ inquirer.prompt([
         ],
 }
 ]).then((answers)=>{
-const { choice } = answers;
-if (choice === 'View All Departments') {
+if (answers.prompt === 'View All Departments') {
     viewAllDepartments();
 }
-if (choice === 'View All Employees') {
+if (answers.prompt === 'View All Employees') {
     viewAllEmployees();
 }
-if (choice === 'View All Roles') {
+if (answers.prompt === 'View All Roles') {
     viewAllRoles();
 }
-if (choice === 'Update Employee Role') {
+if (answers.prompt === 'Update Employee Role') {
     updateEmployeeRole();
 }
-if (choice === 'Add New Employee') {
+if (answers.prompt === 'Add New Employee') {
     addNewEmployee();
 }
-if (choice === 'Add New Role') {
+if (answers.prompt === 'Add New Role') {
     addNewRole();
 }
-if (choice === 'Add New Department') {
+if (answers.prompt === 'Add New Department') {
     addNewDepartment();
 }
-if(choice === 'Exit'){
+if(answers.prompt === 'Exit'){
     console.log('Disconnected from employees_db');
     db.end();
 }
@@ -65,8 +64,9 @@ const viewAllDepartments = () => {
     db.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
+        returnPrompts();
     })
-    returnPrompts();
+
 }
 
 const viewAllEmployees = () => {
@@ -74,8 +74,8 @@ const viewAllEmployees = () => {
     db.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
+        returnPrompts();
     })
-    returnPrompts();
 }
 
 const viewAllRoles = () => {
@@ -83,8 +83,8 @@ const viewAllRoles = () => {
     db.query(query, (err, res) => {
         if (err) throw err;
         console.table(res);
+        returnPrompts();
     })
-    returnPrompts();
 }
 
 //Intisation
