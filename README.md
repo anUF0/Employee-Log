@@ -22,7 +22,7 @@ This project was made with assistance of inquirer, nodejs and mysql2.
 ## Tests
 ![Demonstration](./assets/Demo.webm)
 
-By sourcing the [!seeds](./db/seeds.sql) file you can use example data to  familiarise yourself with the program.
+By sourcing the ![seeds](./db/seeds.sql) file you can use example data to  familiarise yourself with the program.
 
 ## Questions
 For anymore questions contact me at https://github.com/anUF0
