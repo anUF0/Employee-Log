@@ -24,6 +24,7 @@ inquirer.prompt([
             'View All Employees',
             'View All Roles',
             `Update an Employee's Role`,
+            `Update an Employee's Manager`,
             'Add New Department',
             'Add New Employee',
             'Add New Role',
@@ -43,6 +44,9 @@ if (answers.prompt === 'View All Roles') {
 if (answers.prompt === `Update an Employee's Role`) {
     updateEmployeeRole();
 }
+if (answers.prompt === `Update an Employee's Manager`) {
+    updateManagerId();
+}
 if (answers.prompt === 'Add New Employee') {
     addNewEmployee();
 }
@@ -59,6 +63,7 @@ if(answers.prompt === 'Exit'){
 })   
 };
 
+//Function that brings up the 'departments' table
 const viewAllDepartments = () => {
     const query = 'SELECT * FROM departments';
     db.query(query, (err, res) => {
@@ -69,6 +74,7 @@ const viewAllDepartments = () => {
 
 }
 
+//Function that brings up the 'employees' table
 const viewAllEmployees = () => {
     const query = 'SELECT * FROM employees';
     db.query(query, (err, res) => {
@@ -78,6 +84,7 @@ const viewAllEmployees = () => {
     })
 }
 
+//Function that brings up the 'roles' table
 const viewAllRoles = () => {
     const query = 'SELECT * FROM roles';
     db.query(query, (err, res) => {
@@ -87,6 +94,7 @@ const viewAllRoles = () => {
     })
 }
 
+//Function that updates 'employees' table
 const updateEmployeeRole = () => {
     db.query('SELECT * FROM employees', (err, employees) => {
         if (err) console.log(err);
@@ -130,6 +138,7 @@ inquirer.prompt([
 });
 };
 
+//Function adds to the 'departments' table
 const addNewDepartment = () =>{
     inquirer.prompt([
         {
@@ -146,6 +155,7 @@ const addNewDepartment = () =>{
     })
 };
 
+//Function adds to the 'roles' table
 const addNewRole = () =>{
     db.query('SELECT * FROM departments', (err, departments)=>{
         if(err)console.log(err);
@@ -155,7 +165,6 @@ const addNewRole = () =>{
             value: departments.id,
         };
     });
-    console.log(departments)
     inquirer.prompt([
         {
             type: 'input',
@@ -174,7 +183,6 @@ const addNewRole = () =>{
             choices: departments,
         },
     ]).then((data) =>{
-        console.log(data.departmentId)
         db.query('INSERT INTO roles SET ?',
         {
             title: data.title,
@@ -186,6 +194,7 @@ const addNewRole = () =>{
 });
 };
 
+//Function adds to the 'employees' table
 const addNewEmployee = () =>{
     db.query('SELECT * FROM roles', (err, roles)=>{
         if(err)console.log(err);
@@ -203,7 +212,6 @@ const addNewEmployee = () =>{
             value: employees.id,
         };
     });
-    console.log(employees, roles)
     inquirer.prompt([
         {
             type: 'input',
@@ -226,6 +234,7 @@ const addNewEmployee = () =>{
             name: 'manager',
             message: 'Who their Manager?',
             choices: employees,
+            //WIP Cannot set additional 'null' choice
         }
     ]).then((data) =>{
         console.log(data.role)
@@ -242,6 +251,40 @@ const addNewEmployee = () =>{
 });
 });
 };
+
+const updateManagerId= () => {
+    db.query('SELECT * FROM employees', (err, employees) => {
+        if (err) console.log(err);
+        employees = employees.map((employees) => {
+            return {
+                name: `${employees.first_name} ${employees.last_name}`,
+                value: employees.id,
+            };
+    });
+inquirer.prompt([
+    {
+    type: 'list',
+    name: 'selectedEmployee',
+    message: 'Which Employee Would You like to Update?',
+    choices: employees,
+    },
+    {
+    type: 'list',
+    name: 'selectedManger',
+    message: 'Who is their New Manger?',
+    choices: employees,
+    }
+],
+).then((data) => {
+    db.query('UPDATE employees SET ? WHERE ?', [{manager_id: data.selectedManger}, {id: data.selectedEmployee}],
+    function (err) {
+        if (err) throw err;
+    });
+    console.log('Employee Successfully Updated');
+    viewAllEmployees();
+});
+});
+}
 
 //Intisation
 returnPrompts();
