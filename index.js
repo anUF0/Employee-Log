@@ -1,6 +1,7 @@
 //Imports the necissaru libraries
 const mysql = require('mysql2');
 const inquirer = require('inquirer');
+const { default: prompt } = require('inquirer/lib/ui/prompt');
 
 //Connects to Database
 const db = mysql.createConnection({
@@ -28,6 +29,9 @@ inquirer.prompt([
             'Add New Department',
             'Add New Employee',
             'Add New Role',
+            'Delete Employee',
+            'Delete Department',
+            'Delete Role',
             'Exit',
         ],
 }
@@ -55,6 +59,15 @@ if (answers.prompt === 'Add New Role') {
 }
 if (answers.prompt === 'Add New Department') {
     addNewDepartment();
+}
+if (answers.prompt === 'Delete Employee') {
+    deleteEmployee();
+}
+if(answers.prompt === 'Delete Department'){
+    deleteDepartment();
+}
+if(answers.prompt === 'Delete Role'){
+    deleteRole();
 }
 if(answers.prompt === 'Exit'){
     console.log('Disconnected from employees_db');
@@ -137,6 +150,34 @@ inquirer.prompt([
 });
 });
 };
+
+const deleteEmployee = () => {
+    db.query('SELECT * FROM employees', (err, employees) => {
+        if (err) console.log(err);
+        employees = employees.map((employees) => {
+            return {
+                name: `${employees.first_name} ${employees.last_name}`,
+                value: employees.id,
+            };
+    });
+inquirer.prompt([
+    {
+    type: 'list',
+    name: 'selectedEmployee',
+    message: 'Which Employee Would You like to Remove?',
+    choices: employees,
+    },
+],
+).then((data) => {
+    db.query('DELETE FROM employees WHERE ?', [{id: data.selectedEmployee}],
+    function (err) {
+        if (err) throw err;
+    });
+    console.log('Employee Removed from Database');
+    viewAllEmployees();
+});
+});
+}
 
 //Function adds to the 'departments' table
 const addNewDepartment = () =>{
@@ -283,6 +324,60 @@ inquirer.prompt([
     console.log('Employee Successfully Updated');
     viewAllEmployees();
 });
+});
+};
+
+const deleteDepartment = () => {
+    db.query('SELECT * FROM departments', (err, departments)=>{
+        if(err)console.log(err);
+        departments = departments.map((departments) => {
+        return {
+            name: departments.name,
+            value: departments.id,
+        };
+    });
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'selectedDepartment',
+            message: 'Which Department Would You Like to Delete?',
+            choices: departments
+        },
+    ]).then((data) => {
+    db.query('DELETE FROM departments WHERE ?', [{id: data.selectedDepartment}],
+    function (err) {
+        if (err) throw err;
+    });
+    console.log('Department Removed from Database');
+    viewAllDepartments();
+    });
+});
+}
+
+const deleteRole = () => {
+    db.query('SELECT * FROM roles', (err, roles)=>{
+        if(err)console.log(err);
+        roles = roles.map((roles) => {
+        return {
+            name: roles.title,
+            value: roles.id,
+        };
+    });
+    inquirer.prompt([
+        {
+            type: 'list',
+            name: 'selectedRole',
+            message: 'Which Role Would You Like to Delete?',
+            choices: roles
+        },
+    ]).then((data) => {
+    db.query('DELETE FROM roles WHERE ?', [{id: data.selectedRole}],
+    function (err) {
+        if (err) throw err;
+    });
+    console.log('Role Removed from Database');
+    viewAllRoles();
+    });
 });
 }
 

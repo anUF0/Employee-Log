@@ -25,7 +25,7 @@ INSERT INTO employees
 VALUES
 ('Jimmy','Schmitz',1, null), -- 1 --
 ('Tem','Ray', 2, 1), -- 2 --
-('Evelynn','Raine', 2, null),  -- 3 --
+('Evelynn','Raine', 3, null),  -- 3 --
 ('Derrick','Savage', 4, 3),  -- 4 --
 ('Cap','Com', 5, null),  -- 5 -- --
 ('Phoenix','Wright', 7, 5),  -- 6 --
