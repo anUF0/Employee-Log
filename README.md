@@ -20,8 +20,7 @@ Once running the used will be presented with a series of looping prompts that ca
 This project was made with assistance of inquirer, nodejs and mysql2.
 
 ## Tests
-Demonstration:
-
+![Demonstration](./assets/Demo.webm)
 
 By sourcing the [!seeds](./db/seeds.sql) file you can use example data to  familiarise yourself with the program.
 
