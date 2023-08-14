@@ -23,7 +23,7 @@ inquirer.prompt([
     choices: ['View All Departments',
             'View All Employees',
             'View All Roles',
-            'Update An Employee Role',
+            `Update an Employee's Role`,
             'Add A Department',
             'Add An Employee',
             'Add New Deparment',
@@ -40,7 +40,7 @@ if (answers.prompt === 'View All Employees') {
 if (answers.prompt === 'View All Roles') {
     viewAllRoles();
 }
-if (answers.prompt === 'Update Employee Role') {
+if (answers.prompt === `Update an Employee's Role`) {
     updateEmployeeRole();
 }
 if (answers.prompt === 'Add New Employee') {
@@ -86,6 +86,50 @@ const viewAllRoles = () => {
         returnPrompts();
     })
 }
+
+const updateEmployeeRole = () => {
+    db.query('SELECT * FROM employees', (err, employees) => {
+        if (err) console.log(err);
+        employees = employees.map((employees) => {
+            return {
+                name: `${employees.first_name} ${employees.last_name}`,
+                value: employees.id,
+            };
+    });
+    db.query('SELECT * FROM roles', (err, roles) => {
+        if (err) console.log(err);
+        roles = roles.map((roles) => {
+        return {
+            name: roles.title,
+            value: roles.id,
+            };
+});
+inquirer.prompt([
+    {
+    type: 'list',
+    name: 'selectedEmployee',
+    message: 'Which Employee Would You like to Update?',
+    choices: employees,
+    },
+    {
+    type: 'list',
+    name: 'selectedRole',
+    message: 'What is their New Role?',
+    choices: roles
+    }
+],
+).then((data) => {
+    db.query('UPDATE employees SET ? WHERE ?', [{role_id: data.selectedRole}, {id: data.selectedEmployee}],
+    function (err) {
+        if (err) throw err;
+    });
+    console.log('Employee Successfully Updated');
+    viewAllEmployees();
+});
+});
+});
+};
+
 
 //Intisation
 returnPrompts();
